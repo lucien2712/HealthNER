@@ -1,5 +1,5 @@
 # HealthNER
-## Named Entity Recognition for Chinese Healthcare Applications
+## *Named Entity Recognition for Chinese Healthcare Applications*
 Named Entity Recognition is a fundamental task in
 information extraction, which locates and classifies defined named
 entities in unstructured text. Chinese NER is more difficult than
