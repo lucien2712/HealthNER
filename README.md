@@ -21,17 +21,6 @@
   - S: 單字實體
   - O: 非實體
 
-## 系統需求
-
-- Python 3.7+
-- PyTorch 1.7+
-- Transformers 4.5+
-- numpy
-- pandas
-- scikit-learn
-- seqeval (用於評估NER模型)
-- tqdm
-- torchcrf (用於CRF模型)
 
 ## 專案結構
 
