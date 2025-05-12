@@ -16,14 +16,7 @@ from datasets import DatasetDict
 
 class BertNerModel:
     def __init__(self, pretrained_model: str, num_labels: int, model_path: str = None):
-        """
-        初始化BERT NER模型
-        
-        Args:
-            pretrained_model: 預訓練模型名稱或路徑
-            num_labels: 標籤數量
-            model_path: 保存的模型路徑
-        """
+
         self.pretrained_model = pretrained_model
         self.num_labels = num_labels
         self.model_path = model_path
@@ -42,12 +35,7 @@ class BertNerModel:
         self.label2id = {v: k for k, v in self.id2label.items()}
     
     def set_label_map(self, id2label: Dict[int, str]):
-        """
-        設置標籤映射
-        
-        Args:
-            id2label: ID到標籤的映射字典
-        """
+
         self.id2label = id2label
         self.label2id = {v: k for k, v in id2label.items()}
         self.model.config.id2label = id2label
@@ -64,21 +52,7 @@ class BertNerModel:
               weight_decay: float = 0.01,
               save_steps: int = 1000,
               save_total_limit: int = 2):
-        """
-        訓練模型
-        
-        Args:
-            train_dataset: 訓練數據集
-            eval_dataset: 評估數據集
-            output_dir: 輸出目錄
-            num_train_epochs: 訓練輪數
-            batch_size: 批次大小
-            learning_rate: 學習率
-            warmup_ratio: 預熱比例
-            weight_decay: 權重衰減
-            save_steps: 保存步數
-            save_total_limit: 最多保存的檢查點數量
-        """
+      
         training_args = TrainingArguments(
             output_dir=output_dir,
             num_train_epochs=num_train_epochs,
@@ -114,15 +88,7 @@ class BertNerModel:
         return trainer
     
     def compute_metrics(self, p: EvalPrediction) -> Dict[str, float]:
-        """
-        計算評估指標
-        
-        Args:
-            p: 預測結果
-            
-        Returns:
-            指標字典
-        """
+   
         predictions, labels = self.align_predictions(p.predictions, p.label_ids)
         
         report = classification_report(labels, predictions, output_dict=True)
@@ -136,16 +102,7 @@ class BertNerModel:
         return metrics
 
     def align_predictions(self, predictions: np.ndarray, label_ids: np.ndarray) -> Tuple[List[List[str]], List[List[str]]]:
-        """
-        對齊預測結果和標籤
-        
-        Args:
-            predictions: 模型預測結果
-            label_ids: 真實標籤ID
-            
-        Returns:
-            (預測標籤列表, 真實標籤列表)
-        """
+  
         preds = np.argmax(predictions, axis=2)
         
         batch_size, seq_len = preds.shape
@@ -162,15 +119,7 @@ class BertNerModel:
         return preds_list, out_label_list
     
     def predict(self, text: List[str]) -> List[List[str]]:
-        """
-        對輸入文本進行命名實體識別
-        
-        Args:
-            text: 分詞後的文本列表
-            
-        Returns:
-            標籤列表
-        """
+    
         self.model.eval()
         
         inputs = self.tokenizer(

@@ -19,18 +19,7 @@ class BiLSTMCRF(nn.Module):
                  num_layers: int = 2, 
                  dropout: float = 0.5,
                  pretrained_embeddings: Optional[torch.Tensor] = None):
-        """
-        初始化BiLSTM-CRF模型
-        
-        Args:
-            vocab_size: 詞彙表大小
-            tag_to_ix: 標籤到索引的映射
-            embedding_dim: 嵌入維度
-            hidden_dim: LSTM隱藏層維度
-            num_layers: LSTM層數
-            dropout: Dropout比例
-            pretrained_embeddings: 預訓練詞嵌入
-        """
+
         super(BiLSTMCRF, self).__init__()
         self.embedding_dim = embedding_dim
         self.hidden_dim = hidden_dim
@@ -73,18 +62,8 @@ class BiLSTMCRF(nn.Module):
         self.dropout = nn.Dropout(dropout)
     
     def forward(self, sentence: torch.Tensor, tags: Optional[torch.Tensor] = None, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
-        """
-        前向傳播
-        
-        Args:
-            sentence: 輸入序列，形狀為 [batch_size, seq_len]
-            tags: 標籤序列，形狀為 [batch_size, seq_len]
-            mask: 掩碼序列，形狀為 [batch_size, seq_len]
-            
-        Returns:
-            如果提供tags，返回負對數似然。否則，返回解碼序列
-        """
-        # 創建掩碼
+
+     
         if mask is None:
             mask = torch.ne(sentence, 0).to(sentence.device)
         
@@ -107,16 +86,7 @@ class BiLSTMCRF(nn.Module):
             return self.crf.decode(emissions, mask=mask)
     
     def predict(self, sentence: torch.Tensor, mask: Optional[torch.Tensor] = None) -> List[List[int]]:
-        """
-        模型預測
-        
-        Args:
-            sentence: 輸入序列
-            mask: 掩碼序列
-            
-        Returns:
-            預測標籤序列
-        """
+  
         self.eval()
         with torch.no_grad():
             return self.forward(sentence, mask=mask)
@@ -133,20 +103,7 @@ class BiLSTMCRFModel:
                  dropout: float = 0.5,
                  pretrained_embeddings: Optional[torch.Tensor] = None,
                  device: str = None):
-        """
-        BiLSTM-CRF模型封裝
-        
-        Args:
-            vocab_size: 詞彙表大小
-            tag_to_ix: 標籤到索引的映射
-            ix_to_tag: 索引到標籤的映射
-            embedding_dim: 嵌入維度
-            hidden_dim: LSTM隱藏層維度
-            num_layers: LSTM層數
-            dropout: Dropout比例
-            pretrained_embeddings: 預訓練詞嵌入
-            device: 運算設備
-        """
+ 
         self.tag_to_ix = tag_to_ix
         self.ix_to_tag = ix_to_tag
         self.device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
@@ -170,21 +127,7 @@ class BiLSTMCRFModel:
               weight_decay: float = 1e-5,
               patience: int = 3,
               model_path: str = None):
-        """
-        訓練模型
-        
-        Args:
-            train_data_loader: 訓練數據加載器
-            valid_data_loader: 驗證數據加載器
-            epochs: 訓練輪數
-            learning_rate: 學習率
-            weight_decay: 權重衰減
-            patience: 早停耐心值
-            model_path: 模型保存路徑
-            
-        Returns:
-            訓練歷史
-        """
+
         optimizer = optim.Adam(
             self.model.parameters(), 
             lr=learning_rate, 
@@ -267,15 +210,7 @@ class BiLSTMCRFModel:
         return history
     
     def evaluate(self, data_loader) -> Tuple[float, Dict[str, float]]:
-        """
-        評估模型
-        
-        Args:
-            data_loader: 數據加載器
-            
-        Returns:
-            (驗證損失, 指標字典)
-        """
+ 
         self.model.eval()
         total_loss = 0
         all_predictions = []
@@ -317,16 +252,7 @@ class BiLSTMCRFModel:
         return total_loss / len(data_loader), metrics
     
     def predict(self, texts: List[List[str]], word_to_ix: Dict[str, int]) -> List[List[str]]:
-        """
-        對輸入文本進行命名實體識別
-        
-        Args:
-            texts: 文本列表，每個元素是分詞後的列表
-            word_to_ix: 詞彙到索引的映射
-            
-        Returns:
-            標籤列表
-        """
+
         self.model.eval()
         results = []
         
@@ -361,20 +287,8 @@ class BiLSTMCRFModel:
         return results
     
     def load_model(self, model_path: str):
-        """
-        加載模型
-        
-        Args:
-            model_path: 模型路徑
-        """
         self.model.load_state_dict(torch.load(model_path, map_location=self.device))
         self.model.to(self.device)
     
     def save_model(self, model_path: str):
-        """
-        保存模型
-        
-        Args:
-            model_path: 模型保存路徑
-        """
         torch.save(self.model.state_dict(), model_path) 

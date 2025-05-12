@@ -18,17 +18,7 @@ class BertBiLSTMCRF(nn.Module):
                  lstm_layers: int = 2,
                  dropout: float = 0.1,
                  freeze_bert: bool = True):
-        """
-        初始化BERT+BiLSTM+CRF模型
-
-        Args:
-            bert_model_name: BERT預訓練模型名稱或路徑
-            target_size: 標籤數量
-            hidden_dim: BERT和LSTM隱藏層維度
-            lstm_layers: LSTM層數
-            dropout: Dropout比例
-            freeze_bert: 是否凍結BERT參數
-        """
+  
         super(BertBiLSTMCRF, self).__init__()
         
         # BERT模型
@@ -65,18 +55,7 @@ class BertBiLSTMCRF(nn.Module):
                attention_mask: Optional[torch.Tensor] = None, 
                tags: Optional[torch.Tensor] = None, 
                crf_mask: Optional[torch.Tensor] = None) -> Union[torch.Tensor, List[List[int]]]:
-        """
-        前向傳播
 
-        Args:
-            sentence: 輸入序列，形狀為 [batch_size, seq_len]
-            attention_mask: BERT注意力掩碼，形狀為 [batch_size, seq_len]
-            tags: 標籤序列，形狀為 [batch_size, seq_len]
-            crf_mask: CRF掩碼序列，形狀為 [batch_size, seq_len]
-            
-        Returns:
-            如果提供tags，返回損失值。否則，返回預測標籤序列
-        """
         # BERT編碼
         with torch.no_grad() if self.bert_model.training is False else torch.enable_grad():
             bert_outputs = self.bert_model(sentence, attention_mask=attention_mask)
@@ -129,19 +108,7 @@ class BertBiLSTMCRFModel:
                 freeze_bert: bool = True,
                 device: str = None,
                 max_seq_length: int = 150):
-        """
-        BERT+BiLSTM+CRF模型封裝類
-        
-        Args:
-            bert_model_name: 預訓練BERT模型名稱或路徑
-            target_size: 標籤數量
-            hidden_dim: 隱藏層維度
-            lstm_layers: LSTM層數
-            dropout: Dropout比例
-            freeze_bert: 是否凍結BERT參數
-            device: 運算設備
-            max_seq_length: 最大序列長度
-        """
+
         self.bert_model_name = bert_model_name
         self.target_size = target_size
         self.hidden_dim = hidden_dim
@@ -160,16 +127,7 @@ class BertBiLSTMCRFModel:
         ).to(self.device)
     
     def prepare_data(self, data, tag_to_idx):
-        """
-        準備訓練/評估數據
-        
-        Args:
-            data: 輸入數據包含'sentence'和'character_label'
-            tag_to_idx: 標籤到索引的映射
-            
-        Returns:
-            處理後的數據
-        """
+
         # 提取句子列表
         sentences = [s for s in data["sentence"]]
         labels = data["character_label"]
@@ -216,21 +174,7 @@ class BertBiLSTMCRFModel:
               weight_decay: float = 1e-5,
               patience: int = 3,
               model_path: str = None):
-        """
-        訓練模型
-        
-        Args:
-            train_data_loader: 訓練數據加載器
-            valid_data_loader: 驗證數據加載器
-            epochs: 訓練輪數
-            learning_rate: 學習率
-            weight_decay: 權重衰減
-            patience: 早停耐心值
-            model_path: 模型保存路徑
-            
-        Returns:
-            訓練歷史
-        """
+
         optimizer = optim.SGD(
             self.model.parameters(), 
             lr=learning_rate, 
@@ -323,15 +267,7 @@ class BertBiLSTMCRFModel:
         return history
     
     def evaluate(self, data_loader) -> Tuple[float, Dict[str, float]]:
-        """
-        評估模型
-        
-        Args:
-            data_loader: 數據加載器
-            
-        Returns:
-            評估損失和指標
-        """
+
         self.model.eval()
         total_loss = 0
         all_predictions = []
@@ -383,15 +319,7 @@ class BertBiLSTMCRFModel:
         }
     
     def predict(self, sentences: List[str]) -> List[List[int]]:
-        """
-        使用模型進行預測
-        
-        Args:
-            sentences: 輸入句子列表
-            
-        Returns:
-            預測的標籤序列
-        """
+
         self.model.eval()
         
         # 使用BERT tokenizer處理
@@ -422,19 +350,7 @@ class BertBiLSTMCRFModel:
         return result
     
     def load_model(self, model_path: str):
-        """
-        加載模型
-        
-        Args:
-            model_path: 模型路徑
-        """
         self.model.load_state_dict(torch.load(model_path, map_location=self.device))
     
     def save_model(self, model_path: str):
-        """
-        保存模型
-        
-        Args:
-            model_path: 模型路徑
-        """
         torch.save(self.model.state_dict(), model_path) 

@@ -13,16 +13,7 @@ from bert_bilstm_crf_model import BertBiLSTMCRFModel
 
 
 def predict_with_bert(texts: List[str], model_path: str = None):
-    """
-    使用BERT模型進行預測
-    
-    Args:
-        texts: 輸入文本列表
-        model_path: 模型路徑
-        
-    Returns:
-        預測結果
-    """
+ 
     if model_path is None:
         model_path = config.BERT_MODEL_PATH
     
@@ -63,17 +54,7 @@ def predict_with_bert(texts: List[str], model_path: str = None):
 
 
 def predict_with_bilstm_crf(texts: List[str], model_path: str = None, vocab_path: str = None):
-    """
-    使用BiLSTM-CRF模型進行預測
-    
-    Args:
-        texts: 輸入文本列表
-        model_path: 模型路徑
-        vocab_path: 詞彙表路徑
-        
-    Returns:
-        預測結果
-    """
+
     if model_path is None:
         model_path = config.BILSTM_CRF_MODEL_PATH
     
@@ -117,17 +98,7 @@ def predict_with_bilstm_crf(texts: List[str], model_path: str = None, vocab_path
 
 
 def predict_with_bert_bilstm_crf(texts: List[str], model_path: str = None, tag_path: str = None):
-    """
-    使用BERT+BiLSTM+CRF模型進行預測
-    
-    Args:
-        texts: 輸入文本列表
-        model_path: 模型路徑
-        tag_path: 標籤表路徑
-        
-    Returns:
-        預測結果
-    """
+  
     if model_path is None:
         model_path = config.BERT_BILSTM_CRF_MODEL_PATH
     
@@ -190,16 +161,7 @@ def predict_with_bert_bilstm_crf(texts: List[str], model_path: str = None, tag_p
 
 
 def format_result(texts: List[str], predictions: List[List[str]]):
-    """
-    格式化預測結果
-    
-    Args:
-        texts: 輸入文本列表
-        predictions: 預測標籤列表
-        
-    Returns:
-        格式化的結果
-    """
+
     formatted_results = []
     
     for text, preds in zip(texts, predictions):
@@ -255,13 +217,7 @@ def format_result(texts: List[str], predictions: List[List[str]]):
 
 
 def save_predictions(predictions, output_file):
-    """
-    保存預測結果到文件
-    
-    Args:
-        predictions: 預測結果
-        output_file: 輸出文件路徑
-    """
+
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(predictions, f, ensure_ascii=False, indent=2)
     
@@ -269,9 +225,7 @@ def save_predictions(predictions, output_file):
 
 
 def main():
-    """
-    主函數
-    """
+   
     parser = argparse.ArgumentParser(description="使用訓練好的模型進行命名實體識別預測")
     parser.add_argument("--model", type=str, choices=["bert", "bilstm", "bert_bilstm_crf"], default="bert", 
                         help="選擇使用的模型類型：bert、bilstm或bert_bilstm_crf")

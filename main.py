@@ -9,10 +9,7 @@ import config
 
 
 def main():
-    """
-    主函數，處理命令行參數並執行相應功能
-    """
-    # 創建主解析器
+ 
     parser = argparse.ArgumentParser(
         description="中文醫療命名實體識別系統",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
