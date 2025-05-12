@@ -25,18 +25,18 @@
 ## 專案結構
 
 ```
-├── config.py               # 配置文件，包含模型參數和路徑設定
-├── data_utils.py           # 數據處理工具
-├── bert_model.py           # BERT模型實現
-├── bilstm_crf_model.py     # BiLSTM-CRF模型實現
-├── bert_bilstm_crf_model.py# BERT+BiLSTM+CRF模型實現
-├── train.py                # 模型訓練腳本
-├── predict.py              # 模型預測腳本
-├── main.py                 # 主執行腳本
-├── train.json              # 訓練數據
-├── test.json               # 測試數據
-├── real_test.json          # 真實測試數據
-└── saved_models/           # 保存的模型目錄
+├── config.py             
+├── data_utils.py           
+├── bert_model.py           
+├── bilstm_crf_model.py     
+├── bert_bilstm_crf_model.py
+├── train.py                
+├── predict.py              
+├── main.py                 
+├── train.json             
+├── test.json             
+├── real_test.json        
+└── saved_models/           
 ```
 
 ## 模型說明
